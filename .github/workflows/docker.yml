@@ -16,6 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get short SHA
+        id: vars
+        run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -36,4 +40,13 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/postgres-ulid:latest
             ghcr.io/${{ github.repository_owner }}/postgres-ulid:17
-            ghcr.io/${{ github.repository_owner }}/postgres-ulid:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/postgres-ulid:${{ env.SHORT_SHA }}
+            
+      - name: Make GHCR package public
+        run: |
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/user/packages/container/postgres-ulid/visibility \
+            -d '{"visibility":"public"}'
