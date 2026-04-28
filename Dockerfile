@@ -1,7 +1,7 @@
 ARG postgresql_major=17
-ARG postgresql_release=${postgresql_major}.6
+ARG postgresql_release=${postgresql_major}
 
-ARG pgx_ulid_release=0.2.0
+ARG pgx_ulid_release=0.2.3
 
 ####################
 # Postgres
